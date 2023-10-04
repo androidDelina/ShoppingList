@@ -4,16 +4,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
+import java.lang.RuntimeException
 
 class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
 
-    val shopList = mutableListOf<ShopItem>()
+    var shopList = listOf<ShopItem>()
+    set(value) {
+        field = value
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
+        val resLayoutId = when (viewType) {
+            VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
+            VIEW_TYPE_DISABLED -> R.layout.item_shop_disabled
+            else -> throw RuntimeException("Unknown view type: $viewType")
+        }
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_shop_disabled,
+            resLayoutId,
             parent,
             false
         )
@@ -24,6 +35,7 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         val shopItem = shopList[position]
+
         holder.tv_name.text = shopItem.name
         holder.tv_count.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener{
@@ -31,8 +43,23 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (shopList[position].enabled) {
+            VIEW_TYPE_ENABLED
+        } else {
+            VIEW_TYPE_DISABLED
+        }
+    }
+
     class ShopItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val tv_name = view.findViewById<TextView>(R.id.tv_name)
         val tv_count = view.findViewById<TextView>(R.id.tv_count)
+    }
+
+    companion object {
+        const val VIEW_TYPE_ENABLED = 1
+        const val VIEW_TYPE_DISABLED = 0
+
+        const val MAX_POOL_SIZE = 30
     }
 }
