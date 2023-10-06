@@ -62,10 +62,6 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         val tv_count = view.findViewById<TextView>(R.id.tv_count)
     }
 
-//    interface OnShopItemLongClickListener {
-//        fun onShopItenLongClick(shopItem: ShopItem)
-//    }
-
     companion object {
         const val VIEW_TYPE_ENABLED = 1
         const val VIEW_TYPE_DISABLED = 0
