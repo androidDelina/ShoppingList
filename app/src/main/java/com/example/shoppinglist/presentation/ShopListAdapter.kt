@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
@@ -17,6 +16,9 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         field = value
         notifyDataSetChanged()
     }
+
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+    var onShopItemClickListener: ((ShopItem) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
         val resLayoutId = when (viewType) {
             VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
@@ -39,7 +41,11 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         holder.tv_name.text = shopItem.name
         holder.tv_count.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener{
+            onShopItemLongClickListener?.invoke(shopItem)
             true
+        }
+        holder.itemView.setOnClickListener {
+            onShopItemClickListener?.invoke(shopItem)
         }
     }
 
@@ -55,6 +61,10 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         val tv_name = view.findViewById<TextView>(R.id.tv_name)
         val tv_count = view.findViewById<TextView>(R.id.tv_count)
     }
+
+//    interface OnShopItemLongClickListener {
+//        fun onShopItenLongClick(shopItem: ShopItem)
+//    }
 
     companion object {
         const val VIEW_TYPE_ENABLED = 1
