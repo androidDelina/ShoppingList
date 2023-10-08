@@ -1,24 +1,13 @@
 package com.example.shoppinglist.presentation
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 import java.lang.RuntimeException
 
-class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
-
-    var shopList = listOf<ShopItem>()
-    set(value) {
-        val callback = ShopListDiffCallback(shopList, value)
-        val diffResult = DiffUtil.calculateDiff(callback)
-        diffResult.dispatchUpdatesTo(this)
-        field = value
-    }
+class ShopListAdapter: ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallback()) {
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
@@ -36,10 +25,8 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         return ShopItemViewHolder(view)
     }
 
-    override fun getItemCount(): Int = shopList.size
-
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopList[position]
+        val shopItem = getItem(position)
 
         holder.tv_name.text = shopItem.name
         holder.tv_count.text = shopItem.count.toString()
@@ -53,16 +40,11 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (shopList[position].enabled) {
+        return if (getItem(position).enabled) {
             VIEW_TYPE_ENABLED
         } else {
             VIEW_TYPE_DISABLED
         }
-    }
-
-    class ShopItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val tv_name = view.findViewById<TextView>(R.id.tv_name)
-        val tv_count = view.findViewById<TextView>(R.id.tv_count)
     }
 
     companion object {
