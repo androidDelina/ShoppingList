@@ -4,18 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.View.OnTouchListener
-import android.widget.Button
-import android.widget.EditText
-import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
-import com.google.android.material.textfield.TextInputLayout
 import java.lang.RuntimeException
 
 class ShopItemActivity : AppCompatActivity() {
@@ -69,8 +59,8 @@ class ShopItemActivity : AppCompatActivity() {
 
     private fun launchRightMode() {
         val fragment = when (mode) {
-            MODE_ADD -> ShopItemFragment.getShopItemAddFragmentInstance()
-            MODE_EDIT -> ShopItemFragment.getShopItemEditFragmentnstance(itemId)
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(itemId)
             else -> throw RuntimeException("Unknown screen mode $mode")
         }
 
